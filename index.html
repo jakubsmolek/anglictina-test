@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Test angličtiny zdarma – Angličtina s Katkou</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f0efe9;
+    --card: #fbfaf6;
+    --fg: #2b2e2c;
+    --muted: #6b716d;
+    --brand: #5f6b62;
+    --brand-dark: #48524b;
+    --brand-soft: #e4e6e0;
+    --line: #dcdad1;
+    --good: #2f7d4f;
+    --warn: #b8692f;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font: 17px/1.55 "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  main { max-width: 600px; margin: 0 auto; padding: 20px 16px 32px; }
+  h1, h2, h3 { font-family: "Playfair Display", Georgia, serif; color: var(--brand); line-height: 1.15; margin: 0 0 12px; }
+  h1 { font-size: 32px; }
+  h2 { font-size: 25px; }
+  h3 { font-size: 19px; margin-bottom: 6px; }
+  p { margin: 0 0 12px; }
+  .muted { color: var(--muted); }
+  .small { font-size: 14px; }
+  .brand { font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
+  .rule { height: 1px; background: var(--fg); opacity: .6; margin: 0 0 18px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px 18px; margin-bottom: 14px; }
+  .hidden { display: none !important; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; text-align: center;
+    min-height: 50px; padding: 12px 22px; border-radius: 999px; border: 2px solid var(--brand);
+    background: var(--brand); color: #fff; font: inherit; font-weight: 700; cursor: pointer; text-decoration: none;
+  }
+  .btn:hover { background: var(--brand-dark); border-color: var(--brand-dark); }
+  .btn:disabled { opacity: .4; cursor: default; }
+  .btn.ghost { background: transparent; color: var(--brand); }
+  .btn.block { width: 100%; }
+  .stack { display: grid; gap: 10px; }
+
+  /* Úvod */
+  .facts { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 18px; padding: 0; list-style: none; }
+  .facts li { background: var(--brand-soft); color: var(--brand-dark); font-weight: 700; font-size: 14px; border-radius: 999px; padding: 4px 12px; }
+  .gets { padding-left: 20px; margin: 0 0 16px; }
+  .gets li { margin-bottom: 4px; }
+
+  /* Otázka */
+  .top { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); margin-bottom: 8px; }
+  .chip { background: var(--brand-soft); color: var(--brand-dark); border-radius: 999px; padding: 3px 10px; font-weight: 700; font-size: 13px; }
+  .bar { height: 6px; background: var(--line); border-radius: 99px; overflow: hidden; margin-bottom: 16px; }
+  .bar span { display: block; height: 100%; width: 0; background: var(--brand); transition: width .25s; }
+  .question { font-size: 21px; font-weight: 700; line-height: 1.4; margin: 0 0 6px; }
+  .question .en { font-weight: 600; }
+  .hint { color: var(--muted); font-size: 15px; margin: 0 0 16px; }
+  .dialog { background: var(--brand-soft); border-radius: 12px; padding: 12px 14px; margin: 0 0 16px; font-size: 16px; }
+  .dialog b { color: var(--brand-dark); }
+  .options { display: grid; gap: 10px; }
+  .option {
+    display: flex; gap: 12px; align-items: center; text-align: left; width: 100%;
+    min-height: 54px; padding: 10px 14px; border-radius: 12px; border: 2px solid var(--line); background: #fff;
+    font: inherit; font-size: 16px; color: var(--fg); cursor: pointer;
+  }
+  .option:hover { border-color: var(--brand); }
+  .option .key {
+    flex: none; width: 28px; height: 28px; border-radius: 8px; background: var(--brand-soft); color: var(--brand-dark);
+    display: grid; place-items: center; font-weight: 700; font-size: 14px;
+  }
+  .option.selected { border-color: var(--brand); background: #eef0eb; }
+  .option.selected .key { background: var(--brand); color: #fff; }
+  .nav { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 18px; }
+  .back { background: none; border: 0; font: inherit; color: var(--muted); cursor: pointer; padding: 8px 0; }
+  .back:disabled { visibility: hidden; }
+
+  /* Výsledek */
+  .level { display: inline-block; background: var(--brand); color: #fff; font-weight: 700; border-radius: 999px; padding: 4px 14px; font-size: 15px; margin-bottom: 10px; }
+  .score { font-family: "Playfair Display", Georgia, serif; font-size: 54px; color: var(--brand); line-height: 1; margin: 2px 0 4px; }
+  .score small { font-size: 22px; color: var(--muted); }
+  .rows { display: grid; gap: 12px; margin-top: 16px; }
+  .row-top { display: flex; justify-content: space-between; font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+  .row .bar { margin-bottom: 0; height: 8px; }
+  .insight { border-left: 4px solid var(--brand); padding: 2px 0 2px 14px; margin-bottom: 16px; }
+  .insight:last-child { margin-bottom: 0; }
+  .insight .label { font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700; color: var(--muted); }
+  .insight.good { border-color: var(--good); }
+  .insight.warn { border-color: var(--warn); }
+  .insight ul { margin: 6px 0 0; padding-left: 20px; }
+  .insight p { margin: 4px 0 0; }
+  .package { border: 2px solid var(--brand); }
+  .package .price { font-weight: 700; font-size: 20px; margin: 6px 0 10px; }
+  .extra { list-style: none; padding: 0; margin: 12px 0 0; display: grid; gap: 8px; }
+  .extra a { color: var(--brand-dark); font-weight: 700; }
+  .cta { background: var(--brand); color: #fff; border: 0; }
+  .cta h2 { color: #fff; }
+  .cta .btn { background: #fff; color: var(--brand-dark); border-color: #fff; }
+  .cta .btn.ghost { background: transparent; color: #fff; border-color: #fff; }
+  .note { font-size: 13px; color: var(--muted); text-align: center; margin-top: 14px; }
+  footer { text-align: center; font-size: 12px; color: var(--muted); margin-top: 22px; }
+  footer a { color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <div class="brand">Angličtina s Katkou</div>
+
+  <!-- ÚVOD -->
+  <section id="intro">
+    <h1>Zjistěte, jak na tom s angličtinou jste</h1>
+    <div class="rule"></div>
+    <ul class="facts">
+      <li>Zdarma</li><li>14 otázek</li><li>asi 5 minut</li><li>Výsledek hned</li>
+    </ul>
+    <div class="card">
+      <p><b>Na konci uvidíte:</b></p>
+      <ul class="gets">
+        <li>svou orientační úroveň (A1–B2) a skóre podle oblastí,</li>
+        <li>co vám jde a na čem zapracovat,</li>
+        <li>který kurz a materiály se vám hodí nejvíc.</li>
+      </ul>
+      <p class="muted small">Nic nevyplňujete, žádný e-mail ani registrace. Odpovědi zůstávají jen ve vašem prohlížeči.</p>
+      <button class="btn block" id="start" type="button">Začít test</button>
+    </div>
+  </section>
+
+  <!-- OTÁZKA -->
+  <section id="quiz" class="hidden">
+    <div class="top"><span class="chip" id="chip"></span><span id="counter"></span></div>
+    <div class="bar"><span id="progress"></span></div>
+    <div class="card">
+      <p class="question" id="question"></p>
+      <p class="hint" id="hint"></p>
+      <div class="dialog hidden" id="dialog"></div>
+      <div class="options" id="options"></div>
+      <div class="nav">
+        <button class="back" id="back" type="button">← Zpět</button>
+        <button class="btn" id="next" type="button" disabled>Pokračovat</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- VÝSLEDEK -->
+  <section id="result" class="hidden">
+    <h1>Váš výsledek</h1>
+    <div class="rule"></div>
+
+    <div class="card">
+      <span class="level" id="level"></span>
+      <div class="score" id="score"></div>
+      <p id="level-text"></p>
+      <div class="rows" id="rows"></div>
+    </div>
+
+    <div class="card">
+      <h2>Co ukazují vaše odpovědi</h2>
+      <div class="insight good"><div class="label">Co vám jde</div><p id="strength"></p></div>
+      <div class="insight warn"><div class="label">Na čem zapracovat</div><ul id="improve"></ul></div>
+      <div class="insight"><div class="label">Další krok</div><p id="next-step"></p></div>
+    </div>
+
+    <div class="card package">
+      <div class="label muted small"><b>DOPORUČENÝ KURZ PRO VÁS</b></div>
+      <h2 id="pkg-name" style="margin-top:6px"></h2>
+      <p id="pkg-why"></p>
+      <div class="price" id="pkg-price"></div>
+      <a class="btn ghost block" id="pkg-link" target="_top" href="#">Více o kurzu</a>
+      <ul class="extra" id="extra"></ul>
+    </div>
+
+    <div class="card cta">
+      <h2>Udělejte z výsledku plán na míru</h2>
+      <p>Na úvodní lekci zdarma s Katkou probereme váš výsledek a domluvíme se, jak dál.</p>
+      <div class="stack">
+        <a class="btn block" id="book" target="_top" href="#">Domluvit úvodní lekci zdarma</a>
+        <a class="btn ghost block" id="mail" href="#">Poslat výsledek Katce e-mailem</a>
+      </div>
+    </div>
+
+    <button class="btn ghost block" id="restart" type="button">Udělat test znovu</button>
+    <p class="note">Výsledek je orientační odhad podle 11 otázek, ne jazykový certifikát. Přesnou úroveň zjistíte na úvodní lekci.</p>
+  </section>
+
+  <footer>© Angličtina s Katkou · <a href="https://anglictinaskatkou.cz/" target="_top">anglictinaskatkou.cz</a></footer>
+</main>
+
+<script>
+  /* =====================================================================
+     NASTAVENÍ – tady se mění odkazy, kurzy a ceny (bez zásahu do zbytku)
+     ===================================================================== */
+  const CONFIG = {
+    bookingUrl: 'https://anglictinaskatkou.cz/kontakt/',   // TODO: odkaz na rezervaci (Calendly / Reservio)
+    email: 'katka@anglictinaskatkou.cz',
+    packages: {
+      short:  { name: '30minutovka', price: '10 lekcí × 30 min · 3 390 Kč (339 Kč za lekci)', url: 'https://anglictinaskatkou.cz/online-kurzy/' },
+      basic:  { name: '60minutovka', price: '10 lekcí × 60 min · 5 990 Kč (599 Kč za lekci)', url: 'https://anglictinaskatkou.cz/online-kurzy/' },
+      super:  { name: 'Super 60minutovka', price: '20 lekcí × 60 min · 10 990 Kč (549 Kč za lekci)', url: 'https://anglictinaskatkou.cz/online-kurzy/' }
+    },
+    materials: {
+      brana:      { name: 'E-book Brána do celého světa', url: 'https://anglictinaskatkou.cz/ebook-brana-do-celeho-sveta/' },
+      flight:     { name: 'E-book Delayed flight or lost luggage', url: 'https://anglictinaskatkou.cz/ebook-delayed-flight-or-lost-luggage/' },
+      predlozky:  { name: 'E-book Předložky AT / IN / ON', url: 'https://anglictinaskatkou.cz/ebook-at-in-on/' },
+      interview:  { name: 'Jak zvládnout pohovor v angličtině', url: 'https://anglictinaskatkou.cz/jak-zvladnout-pohovor-v-anglictine/' },
+      zdarma:     { name: 'E-book zdarma S angličtinou na cesty', url: 'https://anglictinaskatkou.cz/ebook-zdarma-s-anglictinou-na-cesty/' }
+    }
+  };
+
+  /* =====================================================================
+     OTÁZKY
+     profil: goal (cíl), confidence (sebejistota 1–4), blockers (co brzdí)
+     znalosti: level (A1–B2), area (grammar / vocab / situation), topic (co procvičit)
+     ===================================================================== */
+  const QUESTIONS = [
+    { id: 'goal', kind: 'single', chip: 'O vás',
+      q: 'Na co angličtinu potřebujete nejvíc?', hint: 'Vyberte to, co je pro vás teď nejdůležitější.',
+      options: [
+        { t: 'Na cesty a dovolenou', v: 'travel' },
+        { t: 'Do práce – e-maily, porady, telefonáty', v: 'work' },
+        { t: 'Na pracovní pohovor', v: 'interview' },
+        { t: 'Chci se rozmluvit a víc si věřit', v: 'conversation' }
+      ] },
+    { id: 'confidence', kind: 'single', chip: 'O vás',
+      q: 'Jak se cítíte, když máte mluvit anglicky?', hint: 'Buďte k sobě upřímní, nikdo vás nehodnotí.',
+      options: [
+        { t: 'Raději mlčím, skoro nic neřeknu', v: 1 },
+        { t: 'Domluvím se jednoduchými slovy, rukama nohama', v: 2 },
+        { t: 'Domluvím se, ale hledám slova a bojím se chyb', v: 3 },
+        { t: 'Mluvím docela plynule, chci se zlepšit v detailech', v: 4 }
+      ] },
+    { id: 'blockers', kind: 'multi', chip: 'O vás',
+      q: 'Co vás při angličtině nejvíc brzdí?', hint: 'Můžete vybrat víc možností.',
+      options: [
+        { t: 'Gramatika a časy', v: 'grammar' },
+        { t: 'Neznám slovíčka, nevím, jak se co řekne', v: 'vocab' },
+        { t: 'Nerozumím, když mluví rychle', v: 'listening' },
+        { t: 'Strach z chyb a ostych', v: 'fear' },
+        { t: 'Nemám čas se pravidelně učit', v: 'time' }
+      ] },
+
+    // ZNALOSTI – od nejlehčí po nejtěžší
+    { id: 'k1', kind: 'test', chip: 'Gramatika', level: 'A1', area: 'grammar', topic: 'přítomný čas – he / she / it + -s',
+      q: 'My sister ___ in London.', hint: 'Doplňte správný tvar.',
+      options: ['live', 'lives', 'living', 'is live'], answer: 1 },
+    { id: 'k2', kind: 'test', chip: 'Slovní zásoba', level: 'A1', area: 'vocab', topic: 'slovíčka na letišti',
+      q: 'Na letišti chcete odbavit kufr. Kam jdete?', hint: 'Vyberte správné místo.',
+      options: ['check-in desk', 'gate', 'customs', 'baggage claim'], answer: 0 },
+    { id: 'k3', kind: 'test', chip: 'Gramatika', level: 'A2', area: 'grammar', topic: 'minulý čas (went, saw, had…)',
+      q: 'We ___ to Croatia last summer.', hint: 'Doplňte správný tvar.',
+      options: ['go', 'have gone', 'went', 'were go'], answer: 2 },
+    { id: 'k4', kind: 'test', chip: 'Gramatika', level: 'A2', area: 'grammar', topic: 'předložky času (on Monday, at 10 o’clock)',
+      q: 'The meeting is ___ Monday ___ 10 o’clock.', hint: 'Vyberte správnou dvojici předložek.',
+      options: ['on / at', 'in / at', 'at / on', 'on / in'], answer: 0 },
+    { id: 'k5', kind: 'test', chip: 'Situace', level: 'A2', area: 'situation', topic: 'zdvořilé objednávání (I’d like…, please)',
+      q: 'Jste v restauraci. Co odpovíte?', dialog: '<b>Waiter:</b> Are you ready to order?',
+      hint: 'Vyberte nejvhodnější odpověď.',
+      options: ['Yes, I’d like the chicken soup, please.', 'Yes, I want eat soup.', 'Yes, give me soup.', 'Yes, I am ready for soup.'], answer: 0 },
+    { id: 'k6', kind: 'test', chip: 'Gramatika', level: 'B1', area: 'grammar', topic: 'předpřítomný čas (I have worked here since…)',
+      q: 'I ___ for this company since 2019.', hint: 'Doplňte správný tvar.',
+      options: ['work', 'am working', 'have worked', 'worked'], answer: 2 },
+    { id: 'k7', kind: 'test', chip: 'Slovní zásoba', level: 'B1', area: 'vocab', topic: 'pracovní angličtina – domlouvání schůzek',
+      q: 'I can’t come on Tuesday. Can we ___ the meeting to Thursday?', hint: 'Vyberte správné slovo.',
+      options: ['move', 'remove', 'transport', 'carry'], answer: 0 },
+    { id: 'k8', kind: 'test', chip: 'Situace', level: 'B1', area: 'situation', topic: 'odpovědi u pohovoru',
+      q: 'Jste na pracovním pohovoru. Co odpovíte?', dialog: '<b>Interviewer:</b> What are your strengths?',
+      hint: 'Vyberte nejvhodnější odpověď.',
+      options: ['I’m well organised and I work well under pressure.', 'My strong is organisation.', 'I have many strengths, yes.', 'I am strength in teamwork.'], answer: 0 },
+    { id: 'k9', kind: 'test', chip: 'Slovní zásoba', level: 'B1', area: 'vocab', topic: 'frázová slovesa (fill in, check in, look for…)',
+      q: 'Could you ___ this form, please?', hint: 'Česky: Mohl/a byste prosím vyplnit tento formulář?',
+      options: ['fill in', 'fill up', 'fill on', 'full in'], answer: 0 },
+    { id: 'k10', kind: 'test', chip: 'Gramatika', level: 'B2', area: 'grammar', topic: 'podmínkové věty (If I had…, I would…)',
+      q: 'If I ___ more time, I would take an English course.', hint: 'Doplňte správný tvar.',
+      options: ['have', 'had', 'would have', 'will have'], answer: 1 },
+    { id: 'k11', kind: 'test', chip: 'Situace', level: 'B2', area: 'situation', topic: 'zdvořilé žádosti (Would it be possible…?)',
+      q: 'Přijeli jste do hotelu brzy. Co odpovíte?', dialog: '<b>Receptionist:</b> I’m afraid your room won’t be ready until 3 pm.',
+      hint: 'Vyberte nejvhodnější a nejzdvořilejší odpověď.',
+      options: ['Would it be possible to leave our luggage here until then?', 'Why? I want the room now.', 'OK, no problem room.', 'I leave luggage here, yes?'], answer: 0 }
+  ];
+
+  const POINTS = { A1: 1, A2: 2, B1: 3, B2: 4 };
+  const AREAS = { grammar: 'Gramatika', vocab: 'Slovní zásoba', situation: 'Situace z praxe' };
+  const LEVELS = [
+    { min: 0,  code: 'A1', name: 'Začátečník',
+      text: 'Základy teprve stavíte. Nejrychleji se posunete s pravidelnou výukou, kde od začátku hodně mluvíte.' },
+    { min: 15, code: 'A2', name: 'Mírně pokročilý',
+      text: 'V jednoduchých situacích se domluvíte. Teď je čas rozšířit slovní zásobu a začít mluvit bez dlouhého přemýšlení.' },
+    { min: 40, code: 'B1', name: 'Středně pokročilý',
+      text: 'Domluvíte se ve většině běžných situací. Posun vám přinese jistota v časech, přirozené fráze a plynulost.' },
+    { min: 75, code: 'B2', name: 'Pokročilý',
+      text: 'Angličtinu používáte s jistotou. Dál se posunete v detailech: přirozené obraty, výslovnost a náročnější situace.' }
+  ];
+  const NEXT_STEP = {
+    travel: 'Naučte se fráze na letiště, hotel a restauraci a vyzkoušejte si je nanečisto, ať vás na dovolené nic nezaskočí.',
+    work: 'Procvičte si e-maily, telefonáty a porady na situacích z vaší vlastní práce.',
+    interview: 'Připravte si odpovědi na nejčastější otázky u pohovoru a vyzkoušejte si pohovor nanečisto.',
+    conversation: 'Mluvte co nejvíc. Pravidelná konverzace je nejrychlejší cesta k plynulosti a jistotě.'
+  };
+  const BLOCKER_TIPS = {
+    fear: 'Strach z chyb: na lekcích se chyby dělat smí, Katka opravuje vlídně a s humorem.',
+    listening: 'Porozumění: pomůže pravidelný poslech, třeba krátká videa nebo Quizlet s nahrávkami.',
+    time: 'Málo času: i 2× týdně 30 minut stačí, když je výuka pravidelná a cílená.'
+  };
+
+  /* =====================================================================
+     LOGIKA TESTU
+     ===================================================================== */
+  const $ = id => document.getElementById(id);
+  const KEYS = 'ABCDE';
+  let pos = 0;
+  let answers = {};
+
+  function show(id) {
+    ['intro', 'quiz', 'result'].forEach(s => $(s).classList.toggle('hidden', s !== id));
+    window.scrollTo(0, 0);
+    notifyParent(true);
+  }
+
+  function optionValue(q, i) {
+    return q.kind === 'test' ? i : q.options[i].v;
+  }
+
+  function render() {
+    const q = QUESTIONS[pos];
+    const left = Math.max(1, Math.ceil((QUESTIONS.length - pos) * 20 / 60));
+    $('chip').textContent = q.chip;
+    $('counter').textContent = `${pos + 1} / ${QUESTIONS.length} · zbývá ~${left} min`;
+    $('progress').style.width = `${(pos / QUESTIONS.length) * 100}%`;
+    $('question').innerHTML = q.kind === 'test' && !q.dialog ? `<span class="en">${q.q.replace('___', '_____')}</span>` : q.q;
+    $('hint').textContent = q.hint || '';
+    $('dialog').classList.toggle('hidden', !q.dialog);
+    $('dialog').innerHTML = q.dialog || '';
+    $('back').disabled = pos === 0;
+
+    const box = $('options');
+    box.innerHTML = '';
+    q.options.forEach((o, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'option';
+      b.dataset.index = i;
+      b.innerHTML = `<span class="key">${KEYS[i]}</span><span>${q.kind === 'test' ? o : o.t}</span>`;
+      b.addEventListener('click', () => choose(i));
+      box.appendChild(b);
+    });
+    refresh();
+    notifyParent(true);
+  }
+
+  function isSelected(q, i) {
+    const a = answers[q.id];
+    const v = optionValue(q, i);
+    return q.kind === 'multi' ? Array.isArray(a) && a.includes(v) : a === v;
+  }
+
+  function refresh() {
+    const q = QUESTIONS[pos];
+    document.querySelectorAll('.option').forEach(b => b.classList.toggle('selected', isSelected(q, +b.dataset.index)));
+    const answered = q.kind === 'multi' || answers[q.id] !== undefined;
+    $('next').disabled = !answered;
+    $('next').textContent = pos === QUESTIONS.length - 1 ? 'Zobrazit výsledek'
+      : (q.kind === 'multi' && !(answers[q.id] || []).length ? 'Přeskočit' : 'Pokračovat');
+  }
+
+  function choose(i) {
+    const q = QUESTIONS[pos];
+    const v = optionValue(q, i);
+    if (q.kind === 'multi') {
+      const list = answers[q.id] || [];
+      answers[q.id] = list.includes(v) ? list.filter(x => x !== v) : list.concat(v);
+    } else {
+      answers[q.id] = v;
+    }
+    refresh();
+  }
+
+  function next() {
+    if ($('next').disabled) return;
+    if (pos < QUESTIONS.length - 1) { pos++; render(); }
+    else showResult();
+  }
+
+  function back() {
+    if (pos > 0) { pos--; render(); }
+  }
+
+  function evaluate() {
+    const tests = QUESTIONS.filter(q => q.kind === 'test');
+    let points = 0, max = 0;
+    const areas = {};
+    const wrong = [];
+    tests.forEach(q => {
+      const ok = answers[q.id] === q.answer;
+      max += POINTS[q.level];
+      if (ok) points += POINTS[q.level];
+      areas[q.area] = areas[q.area] || { ok: 0, all: 0 };
+      areas[q.area].all++;
+      if (ok) areas[q.area].ok++; else wrong.push(q);
+    });
+    const score = Math.round((points / max) * 100);
+    const level = LEVELS.filter(l => score >= l.min).pop();
+    return { score, level, areas, wrong, correct: tests.length - wrong.length, total: tests.length };
+  }
+
+  function pickPackage(goal, levelCode) {
+    const advanced = levelCode === 'B1' || levelCode === 'B2';
+    if (goal === 'travel') return { key: 'short', why: 'Kratší lekce zaměřené na konverzaci a situace z cest. Rychle uvidíte pokrok.' };
+    if (goal === 'interview') return { key: 'basic', why: 'Hodinové lekce dají prostor připravit vaše odpovědi a vyzkoušet si pohovor nanečisto.' };
+    if (advanced) return { key: 'super', why: 'Pro plynulou komunikaci je nejlepší delší kurz s lekcemi 2× týdně. Je i nejvýhodnější.' };
+    return { key: 'basic', why: 'Hodinové lekce od základů po plynulou komunikaci: gramatika, slovní zásoba, poslech i konverzace.' };
+  }
+
+  function pickMaterials(goal, wrong) {
+    const list = [];
+    const wrongIds = wrong.map(q => q.id);
+    if (goal === 'travel') list.push(wrongIds.includes('k2') || wrongIds.includes('k5') ? 'zdarma' : 'brana', 'flight');
+    if (goal === 'interview') list.push('interview');
+    if (wrongIds.includes('k4')) list.push('predlozky');
+    return [...new Set(list)].slice(0, 3);
+  }
+
+  function showResult() {
+    const r = evaluate();
+    const goal = answers.goal;
+    const confidence = answers.confidence;
+    const blockers = answers.blockers || [];
+
+    $('level').textContent = `${r.level.code} · ${r.level.name}`;
+    $('score').innerHTML = `${r.score}<small> / 100</small>`;
+    $('level-text').textContent = r.level.text;
+
+    // Skóre podle oblastí + sebejistota z vlastního hodnocení
+    const rows = Object.keys(AREAS).map(a => {
+      const pct = Math.round((r.areas[a].ok / r.areas[a].all) * 100);
+      return { name: AREAS[a], pct, label: `${r.areas[a].ok} / ${r.areas[a].all}` };
+    });
+    rows.push({ name: 'Sebejistota (vaše hodnocení)', pct: confidence * 25, label: ['', 'nízká', 'spíš nízká', 'střední', 'vysoká'][confidence] });
+    $('rows').innerHTML = rows.map(x => `<div class="row"><div class="row-top"><span>${x.name}</span><span>${x.label}</span></div>
+      <div class="bar"><span style="width:${x.pct}%"></span></div></div>`).join('');
+
+    // Co vám jde
+    const areaRank = Object.keys(AREAS).map(a => ({ a, pct: r.areas[a].ok / r.areas[a].all })).sort((x, y) => y.pct - x.pct);
+    let strength;
+    if (r.correct === r.total) strength = 'Všechny otázky máte správně. Gramatika, slovíčka i reakce v situacích vám jdou výborně.';
+    else if (areaRank[0].pct === 0) strength = 'Odvahu začít jste už našli, a to je nejdůležitější krok. Základy se dají postavit rychle.';
+    else strength = `Nejsilnější oblast: ${AREAS[areaRank[0].a].toLowerCase()}.` +
+      (r.correct ? ` Správně jste odpověděli na ${r.correct} z ${r.total} otázek.` : '');
+    if (confidence <= 2 && r.score >= 40) strength += ' Umíte víc, než si myslíte. Teď jde hlavně o to rozmluvit se.';
+    $('strength').textContent = strength;
+
+    // Na čem zapracovat
+    const improve = r.wrong.slice(0, 3).map(q => q.topic.charAt(0).toUpperCase() + q.topic.slice(1));
+    if (confidence >= 3 && r.score < 40) improve.push('Odvahu mluvit máte, teď přidat jistotu v základní gramatice.');
+    blockers.filter(b => BLOCKER_TIPS[b]).slice(0, 2).forEach(b => improve.push(BLOCKER_TIPS[b]));
+    if (!improve.length) improve.push('Přirozené obraty a plynulost v rychlé konverzaci – to už se nejlépe učí mluvením.');
+    $('improve').innerHTML = improve.map(t => `<li>${t}</li>`).join('');
+
+    $('next-step').textContent = NEXT_STEP[goal];
+
+    // Doporučený kurz a materiály
+    const pkg = pickPackage(goal, r.level.code);
+    const p = CONFIG.packages[pkg.key];
+    $('pkg-name').textContent = p.name;
+    $('pkg-why').textContent = pkg.why;
+    $('pkg-price').textContent = p.price;
+    $('pkg-link').href = p.url;
+    const mats = pickMaterials(goal, r.wrong);
+    $('extra').innerHTML = mats.length
+      ? '<li class="muted small"><b>Hodit se vám může i:</b></li>' + mats.map(m => `<li>→ <a href="${CONFIG.materials[m].url}" target="_top">${CONFIG.materials[m].name}</a></li>`).join('')
+      : '';
+
+    // Rezervace a e-mail s výsledkem (odesílá si ho uživatel sám ze svého e-mailu)
+    $('book').href = CONFIG.bookingUrl;
+    const goalText = QUESTIONS[0].options.find(o => o.v === goal).t;
+    const body = `Dobrý den,\n\nudělal/a jsem test angličtiny na vašem webu.\n\nVýsledek: ${r.level.code} · ${r.level.name} (${r.score}/100)\nCíl: ${goalText}\nDoporučený kurz: ${p.name}\n\nRád/a bych se domluvil/a na úvodní lekci zdarma.\n\n`;
+    $('mail').href = `mailto:${CONFIG.email}?subject=${encodeURIComponent('Výsledek testu angličtiny: ' + r.level.code)}&body=${encodeURIComponent(body)}`;
+
+    $('progress').style.width = '100%';
+    show('result');
+  }
+
+  function restart() {
+    answers = {};
+    pos = 0;
+    show('quiz');
+    render();
+  }
+
+  // Klávesnice: A–E výběr, Enter pokračovat
+  document.addEventListener('keydown', e => {
+    if ($('quiz').classList.contains('hidden')) return;
+    const i = KEYS.indexOf(e.key.toUpperCase());
+    if (i >= 0 && i < QUESTIONS[pos].options.length) choose(i);
+    if (e.key === 'Enter') next();
+  });
+
+  /* Vložení do MioWebu přes iframe: posílá výšku stránky, aby iframe neměl posuvník */
+  function notifyParent(scroll) {
+    if (window.parent === window) return;
+    requestAnimationFrame(() => {
+      window.parent.postMessage({ type: 'katka-test', height: document.documentElement.scrollHeight, scroll: !!scroll }, '*');
+    });
+  }
+  if (window.ResizeObserver) new ResizeObserver(() => notifyParent(false)).observe(document.body);
+
+  $('start').addEventListener('click', restart);
+  $('restart').addEventListener('click', restart);
+  $('next').addEventListener('click', next);
+  $('back').addEventListener('click', back);
+</script>
+</body>
+</html>
