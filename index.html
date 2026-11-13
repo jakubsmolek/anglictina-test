@@ -108,6 +108,21 @@
   .cta h2 { color: #fff; }
   .cta .btn { background: #fff; color: var(--brand-dark); border-color: #fff; }
   .cta .btn.ghost { background: transparent; color: #fff; border-color: #fff; }
+  .mail-options { background: #fff; color: var(--fg); border-radius: 12px; padding: 16px; margin-top: 12px; }
+  .mail-grid { display: grid; gap: 8px; margin: 10px 0 12px; }
+  .mail-opt {
+    display: flex; align-items: center; justify-content: center; text-align: center; min-height: 46px; padding: 8px 12px;
+    border: 2px solid var(--line); border-radius: 10px; background: #fff; color: var(--brand-dark);
+    font: inherit; font-size: 15px; font-weight: 700; text-decoration: none; cursor: pointer;
+  }
+  .mail-opt:hover { border-color: var(--brand); background: #fff3f5; }
+  .mail-note { color: var(--muted); margin-bottom: 4px; }
+  .mail-note b { color: var(--fg); word-break: break-all; }
+  .link-btn { background: none; border: 0; padding: 0; font: inherit; color: var(--brand); text-decoration: underline; cursor: pointer; }
+  .mail-status { color: var(--good); font-weight: 700; margin: 6px 0 0; min-height: 1em; }
+  .mail-status.err { color: var(--brand-dark); }
+  .mail-text { width: 100%; margin-top: 8px; font: 14px/1.4 inherit; border: 1px solid var(--line); border-radius: 8px; padding: 8px; }
+  @media (min-width: 520px) { .mail-grid { grid-template-columns: 1fr 1fr; } }
   .note { font-size: 13px; color: var(--muted); text-align: center; margin-top: 14px; }
   footer { text-align: center; font-size: 12px; color: var(--muted); margin-top: 22px; }
   footer a { color: var(--muted); }
@@ -185,7 +200,22 @@
       <p>Na úvodní lekci zdarma s Katkou probereme váš výsledek a domluvíme se, jak dál.</p>
       <div class="stack">
         <a class="btn block" id="book" target="_top" href="#">Domluvit úvodní lekci zdarma</a>
-        <a class="btn ghost block" id="mail" href="#">Poslat výsledek Katce e-mailem</a>
+        <button class="btn ghost block" id="mail-toggle" type="button" aria-expanded="false" aria-controls="mail-options">Poslat výsledek Katce e-mailem</button>
+      </div>
+      <div class="mail-options hidden" id="mail-options">
+        <p class="small"><b>Kde e-mail píšete?</b> Adresa, předmět i výsledek se vyplní samy.</p>
+        <div class="mail-grid">
+          <a class="mail-opt" id="mail-gmail" target="_blank" rel="noopener" href="#">Gmail</a>
+          <a class="mail-opt" id="mail-outlook" target="_blank" rel="noopener" href="#">Outlook.com / Hotmail</a>
+          <a class="mail-opt" id="mail-office" target="_blank" rel="noopener" href="#">Outlook v práci (Microsoft 365)</a>
+          <a class="mail-opt" id="mail-app" href="#">E-mailová aplikace v zařízení</a>
+          <button class="mail-opt hidden" id="mail-share" type="button">Sdílet jinak (WhatsApp, Messenger…)</button>
+          <button class="mail-opt" id="mail-copy" type="button">Zkopírovat text výsledku</button>
+        </div>
+        <p class="small mail-note">Jiná pošta, třeba Seznam? Zkopírujte text a pošlete ho na
+          <b id="mail-address"></b> <button class="link-btn" id="copy-address" type="button">zkopírovat adresu</button></p>
+        <p class="small mail-status" id="copy-status" role="status"></p>
+        <textarea class="mail-text hidden" id="mail-text" readonly rows="8" aria-label="Text výsledku k ručnímu zkopírování"></textarea>
       </div>
     </div>
 
@@ -483,11 +513,75 @@
     $('book').href = CONFIG.bookingUrl;
     const goalText = QUESTIONS[0].options.find(o => o.v === goal).t;
     const body = `Dobrý den,\n\nudělal/a jsem test angličtiny na vašem webu.\n\nVýsledek: ${r.level.code} · ${r.level.name} (${r.score}/100)\nCíl: ${goalText}\nDoporučený kurz: ${p.name}\n\nRád/a bych se domluvil/a na úvodní lekci zdarma.\n\n`;
-    $('mail').href = `mailto:${CONFIG.email}?subject=${encodeURIComponent('Výsledek testu angličtiny: ' + r.level.code)}&body=${encodeURIComponent(body)}`;
+    setupMail('Výsledek testu angličtiny: ' + r.level.code, body);
 
     $('progress').style.width = '100%';
     show('result');
   }
+
+  /* Poslání výsledku: webová pošta (Gmail, Outlook), aplikace v zařízení, sdílení nebo zkopírování.
+     Nic se neodesílá automaticky, e-mail vždy odešle uživatel sám. */
+  let mailText = '';
+
+  function setupMail(subject, body) {
+    const to = CONFIG.email;
+    const enc = encodeURIComponent;
+    $('mail-gmail').href = `https://mail.google.com/mail/?view=cm&fs=1&to=${enc(to)}&su=${enc(subject)}&body=${enc(body)}`;
+    $('mail-outlook').href = `https://outlook.live.com/mail/0/deeplink/compose?to=${enc(to)}&subject=${enc(subject)}&body=${enc(body)}`;
+    $('mail-office').href = `https://outlook.office.com/mail/deeplink/compose?to=${enc(to)}&subject=${enc(subject)}&body=${enc(body)}`;
+    $('mail-app').href = `mailto:${to}?subject=${enc(subject)}&body=${enc(body)}`;
+    $('mail-address').textContent = to;
+    mailText = `Komu: ${to}\nPředmět: ${subject}\n\n${body}`;
+    $('mail-share').classList.toggle('hidden', !navigator.share);
+    $('mail-share').onclick = () => navigator.share({ title: subject, text: `Pro: ${to}\n\n${body}` }).catch(() => {});
+    $('mail-text').value = mailText;
+    $('mail-text').classList.add('hidden');
+    $('copy-status').textContent = '';
+    $('mail-options').classList.add('hidden');
+    $('mail-toggle').setAttribute('aria-expanded', 'false');
+  }
+
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).catch(() => copyFallback(text));
+    }
+    return new Promise((resolve, reject) => { try { copyFallback(text); resolve(); } catch (e) { reject(e); } });
+  }
+
+  function copyFallback(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    ta.remove();
+    if (!ok) throw new Error('copy failed');
+  }
+
+  function copyWithStatus(text, okMessage) {
+    const status = $('copy-status');
+    copyText(text).then(() => {
+      status.className = 'small mail-status';
+      status.textContent = okMessage;
+    }).catch(() => {
+      status.className = 'small mail-status err';
+      status.textContent = 'Kopírování se nepovedlo. Označte text níže a zkopírujte ho ručně.';
+      $('mail-text').classList.remove('hidden');
+    });
+  }
+
+  $('mail-toggle').addEventListener('click', () => {
+    const open = $('mail-options').classList.toggle('hidden') === false;
+    $('mail-toggle').setAttribute('aria-expanded', String(open));
+  });
+  $('mail-copy').addEventListener('click', () =>
+    copyWithStatus(mailText, `Zkopírováno. Vložte text do nového e-mailu na ${CONFIG.email}.`));
+  $('copy-address').addEventListener('click', () =>
+    copyWithStatus(CONFIG.email, 'Adresa zkopírována.'));
 
   function restart() {
     answers = {};
